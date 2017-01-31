@@ -1,0 +1,110 @@
+body {
+    padding-top: 10px;
+    padding-bottom: 20px
+}
+.header,
+.marketing,
+.footer {
+    padding-right: 10px;
+    padding-left: 10px
+}
+.header {
+    border-bottom: 1px solid #e5e5e5
+}
+.header h3 {
+    padding-bottom: 19px;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px
+}
+.footer {
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5
+}
+
+.jumbotron {
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5
+}
+.jumbotron .btn {
+    padding: 14px 14px;
+    font-size: 21px
+}
+.marketing {
+    margin: 40px 0;
+    text-align: center
+}
+.marketing p+h4 {
+    margin-top: 28px
+}
+table.sort thead td {
+    cursor: pointer;
+    cursor: hand;
+    font-weight: bold;
+    text-align: center;
+    vertical-align: middle
+}
+table.sort thead td.curcol {
+    background-color: #999;
+    color: #fff
+}
+@media screen and (min-width: 768px) {
+    .header,
+    .marketing,
+    .footer {
+        padding-right: 0;
+        padding-left: 0
+    }
+    .header {
+        margin-bottom: 30px
+    }
+    .jumbotron {
+        border-bottom: 0
+    }
+}
+.fixed {
+    position: fixed
+}
+.bs-docs-sidebar {
+    padding-left: 20px;
+    margin-top: 20px;
+    margin-bottom: 20px
+}
+.bs-docs-sidebar .nav>li>a {
+    color: #999;
+    border-left: 2px solid transparent;
+    padding: 4px 20px;
+    font-size: 13px;
+    font-weight: 400
+}
+.bs-docs-sidebar .nav .nav>li>a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px
+}
+.bs-docs-sidebar .nav>.active>a,
+.bs-docs-sidebar .nav>li>a:hover,
+.bs-docs-sidebar .nav>li>a:focus {
+    color: #563d7c;
+    text-decoration: none;
+    background-color: transparent;
+    border-left-color: #563d7c
+}
+.bs-docs-sidebar .nav>.active>a,
+.bs-docs-sidebar .nav>.active:hover>a,
+.bs-docs-sidebar .nav>.active:focus>a {
+    font-weight: 700
+}
+.bs-docs-sidebar .nav .nav>.active>a,
+.bs-docs-sidebar .nav .nav>.active:hover>a,
+.bs-docs-sidebar .nav .nav>.active:focus>a {
+    font-weight: 500
+}
+.bs-docs-sidebar .nav ul.nav {
+    display: none
+}
+.bs-docs-sidebar .nav>.active>ul.nav {
+    display: block
+}
