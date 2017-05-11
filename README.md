@@ -1,4 +1,4 @@
-# Twitter - Who to unfollow #
+<<<<<<<  Twitter - Who to unfollow
 Organizing all of your friends on Twitter. Unfollow manager. 
 Install:
 1. edit config.php
@@ -7,3 +7,4 @@ Install:
 <img src="http://i.imgur.com/UcHL9B0.png" itemprop="image" alt="Twitter" >
 <img src="https://i.imgur.com/gfzrMlC.png" itemprop="image" alt="Twitter" >
 
+=======
