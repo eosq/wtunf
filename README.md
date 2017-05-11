@@ -1,5 +1,6 @@
-<<<<<<<  Twitter - Who to unfollow
+#Twitter - Who to unfollow#
 Organizing all of your friends on Twitter. Unfollow manager. 
+
 Install:
 1. edit config.php
 2. open index.php
