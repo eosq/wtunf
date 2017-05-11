@@ -4,8 +4,11 @@ $CONSUMER_SECRET=[''];
 $oauth_tok=[''];
 $oauth_sec=[''];
 
- define('MYSQL_HOST', '127.0.0.1');
- define('MYSQL_LOGIN', 'root');
- define('MYSQL_PASS', 'toor');
- define('MYSQL_BD', 'twitter');
+ $MYSQL_HOST='127.0.0.1';
+ $MYSQL_LOGIN='root';
+ $MYSQL_PASS='password';
+ $MYSQL_BD='twitter';
+ $MYSQL_TABLE='unfoll';
+
+ 
 ?>

@@ -1,9 +1,9 @@
 # Twitter - Who to unfollow #
-Organizing all of your friends on Twitter.
+Organizing all of your friends on Twitter. Unfollow manager. 
 Install:
-1. import unfoll.sql in your phpmyadmin
-2. edit config.php
-3. open index.php
-<img src="https://i.imgur.com/czBG00R.png" itemprop="image" alt="Twitter" >
-<img src="https://i.imgur.com/aQYeb2u.png" itemprop="image" alt="Twitter" >
-<img src="https://i.imgur.com/Rp6kuK5.png" itemprop="image" alt="Twitter" >
+1. edit config.php
+2. open index.php
+3. Make table, update table and tweets info
+<img src="http://i.imgur.com/UcHL9B0.png" itemprop="image" alt="Twitter" >
+<img src="https://i.imgur.com/gfzrMlC.png" itemprop="image" alt="Twitter" >
+
