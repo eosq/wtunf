@@ -1,26 +1,31 @@
 <?php
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 require "twitteroauth/autoload.php";
 require "config.php";
 use Abraham\TwitterOAuth\TwitterOAuth;
 
 $checklim   = 0;
-$connection = new TwitterOAuth($CONSUMER_KEY[$checklim], $CONSUMER_SECRET[$checklim], $oauth_tok[$checklim], $oauth_sec[$checklim]);
-
+//получаем список ид из таблицы
 try {
     $dbh = new PDO("mysql:host=$MYSQL_HOST;dbname=$MYSQL_BD;charset=utf8mb4", $MYSQL_LOGIN, $MYSQL_PASS);
-    $query = "TRUNCATE TABLE unfoll";
-    $sth=$dbh->prepare($query);
+    $sth=$dbh->prepare("SELECT user_id FROM $MYSQL_TABLE");
     $sth->execute();
-    $sth=null;
-    $dbh = null;
+    $follow_db = $sth->fetchAll();
 } catch (PDOException $e) {
     print "Error!: " . $e->getMessage() . "<br/>";
     die();
 }
-
-echo '<div aling="center" class="well"><p>очистили таблицу</p>';
+$follow_dbarr=array();
+foreach ($follow_db as $follow) {
+    $follow_dbarr[]=$follow['user_id'];
+}
+echo '<div aling="center" class="well"><p>получили данные с таблицы. Всего '.count($follow_db).' записей.</p>';
+//получили друзей из тви
 $cursor     = -1;
 $friendsArr = array();
+$connection = new TwitterOAuth($CONSUMER_KEY[$checklim], $CONSUMER_SECRET[$checklim], $oauth_tok[$checklim], $oauth_sec[$checklim]);
 
 do {
     $friends = $connection->get('friends/ids', array(
@@ -29,13 +34,45 @@ do {
     ));
     if (isset($friends->errors)) {
         echo '<h1>error:' . $friends->errors->message . '</h1>';
+        echo '<pre>';
+        print_r($friends);
+        echo '</pre>';
         exit();
     }
     $friendsArr = array_merge($friendsArr, $friends->ids);
     $cursor     = $friends->next_cursor;
 } while ($friends->next_cursor != 0);
-for ($i = 0; $i < count($friendsArr); $i++) {
-    $query = "INSERT INTO unfoll(user_id) VALUES('$friendsArr[$i]') ";
+echo '<p>получили данные из твиттера. Всего '.count($friendsArr).' друзей загружено.</p>';
+//получили фолловеров из тви
+$cursor = -1; $followersArr = array();
+$y=0;
+do {
+    $y++;
+    // для followers
+    $followers = $connection->get('followers/ids', array(
+        'cursor' => $cursor
+    ));
+    if (isset($followers->errors)) {
+        echo '<pre>';
+        print_r($followers);
+        echo '</pre>';
+        echo '<h1>error:' . $followers->errors['message'] . '</h1>';
+        exit();
+    }
+    array(
+        $followers->ids
+    );
+    $followersArr = array_merge($followersArr, $followers->ids);
+    $cursor = $followers->next_cursor;
+} while ($followers->next_cursor != 0|| $y<2);
+
+//нашли новых
+$newfollow=array_diff($friendsArr, $follow_dbarr);
+echo '<p>сравнили. '.count($newfollow).' новых друзей найдено</p>';
+$newfollow=array_values($newfollow);
+//вставили новых в таблицу
+for ($i = 0; $i < count($newfollow); $i++) {
+    $query = "INSERT INTO $MYSQL_TABLE(user_id) VALUES('$newfollow[$i]') ";
 
     try {
         $dbh = new PDO("mysql:host=$MYSQL_HOST;dbname=$MYSQL_BD;charset=utf8mb4", $MYSQL_LOGIN, $MYSQL_PASS);
@@ -47,31 +84,33 @@ for ($i = 0; $i < count($friendsArr); $i++) {
     }
 }
 $sth=$dbh=null;
-echo '<p>заполнили все id</p>';
-$cursor = -1;
 
-$followersArr = array();
-$y=0;
-do {
-    $y++;
-    // для followers
-    $followers = $connection->get('followers/ids', array(
-        'cursor' => $cursor
-    ));
-    if (isset($followers->errors)) {
-        echo '<h1>error:' . $followers->errors['message'] . '</h1>';
-        exit();
+//удалили не найденых
+$notfindfollow=array_diff($follow_dbarr, $friendsArr);
+if (count($notfindfollow)>0) {
+    $notfindfollow=array_values($notfindfollow);
+    for ($i = 0; $i < count($notfindfollow); $i++) {
+        $query = 'DELETE FROM '.$MYSQL_TABLE.' WHERE user_id='.$notfindfollow[$i];
+        try {
+            $dbh = new PDO("mysql:host=$MYSQL_HOST;dbname=$MYSQL_BD;charset=utf8mb4", $MYSQL_LOGIN, $MYSQL_PASS);
+            $sth=$dbh->prepare($query);
+            $sth->execute();
+        } catch (PDOException $e) {
+            print "Error!: " . $e->getMessage() . "<br/>";
+            die();
+        }
     }
-    array(
-        $followers->ids
-    );
-    $followersArr = array_merge($followersArr, $followers->ids);
+    $sth=$dbh=null;
+}
 
-    $cursor = $followers->next_cursor;
-} while ($followers->next_cursor != 0|| $y<2);
 
+// получили список невзаимных
+$notfollow100=array();
 $notFollowArr = array_diff($friendsArr, $followersArr);
+$notfollow100=array_merge($notfollow100, $newfollow);
 $notfollow100 = array_chunk($friendsArr, 100);
+
+echo '<p>загружено '.count($followersArr).'  читателей. Найдено '.count($notFollowArr).'  невзаимных</p>';
 $u            = -1;
 $t            = 0;
 
@@ -201,7 +240,7 @@ do {
             $sth->bindValue(':Follonwer', $Follonwer);
             $sth->bindValue(':followme', $followme);
             $sth->bindParam(':user_id', $id);
-            
+
             $sth->execute();
             $sth=null;
             $t++;
